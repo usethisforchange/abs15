@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arronstone - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Bungee&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #fff;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            border-right: 1px solid #000;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            padding: 30px 20px;
+            font-size: 20px;
+            font-weight: 900;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            font-family: 'Bungee', cursive;
+            letter-spacing: -1px;
+        }
+
+        .menu-wrap {
+            width: 100%;
+            height: calc(100% - 90px);
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu__item {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            border-top: 1px solid #000;
+        }
+
+        .menu__item:first-child {
+            border-top: none;
+        }
+
+        .menu__item-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 14px;
+            color: #000;
+            transition: color 0.3s;
+        }
+
+        .marquee {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform: translate3d(0, 101%, 0);
+            background: #000;
+        }
+
+        .marquee__inner-wrap {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .marquee__inner {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 100%;
+            width: fit-content;
+            will-change: transform;
+        }
+
+        .marquee__part {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .marquee span {
+            white-space: nowrap;
+            text-transform: uppercase;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0 1vw;
+            color: #fff;
+        }
+
+        .marquee__img {
+            width: 80px;
+            height: 40px;
+            margin: 0 1vw;
+            border-radius: 20px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            padding: 0;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            padding: 60px 40px;
+            border-bottom: 1px solid #000;
+            background: #fff;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 64px;
+            font-weight: 900;
+            font-family: 'Bungee', cursive;
+            color: #000;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .cards-container {
+            padding: 60px 40px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #000;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-image-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+
+        .card:hover .card-image {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .card-tag {
+            background: transparent;
+            border: 1px solid #000;
+            color: #000;
+            padding: 4px 12px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            border-radius: 12px;
+        }
+
+        .card:hover .card-tag {
+            background: #000;
+            color: #fff;
+        }
+
+        .card-button {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid #000;
+            color: #000;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .card-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            transition: left 0.3s;
+            z-index: -1;
+        }
+
+        .card-button:hover::before {
+            left: 0;
+        }
+
+        .card-button:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #000;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 0;
+            }
+
+            .stats-section {
+                gap: 40px;
+                padding: 40px 20px;
+            }
+
+            .stat-number {
+                font-size: 48px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .cards-container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useRef, useEffect, useState } = React;
+
+        function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marqueeTextColor, borderColor }) {
+            const itemRef = useRef(null);
+            const marqueeRef = useRef(null);
+            const marqueeInnerRef = useRef(null);
+            const animationRef = useRef(null);
+            const [repetitions, setRepetitions] = useState(4);
+
+            const animationDefaults = { duration: 0.6, ease: 'expo' };
+
+            const findClosestEdge = (mouseX, mouseY, width, height) => {
+                const topEdgeDist = distMetric(mouseX, mouseY, width / 2, 0);
+                const bottomEdgeDist = distMetric(mouseX, mouseY, width / 2, height);
+                return topEdgeDist < bottomEdgeDist ? 'top' : 'bottom';
+            };
+
+            const distMetric = (x, y, x2, y2) => {
+                const xDiff = x - x2;
+                const yDiff = y - y2;
+                return xDiff * xDiff + yDiff * yDiff;
+            };
+
+            useEffect(() => {
+                const calculateRepetitions = () => {
+                    if (!marqueeInnerRef.current) return;
+                    const marqueeContent = marqueeInnerRef.current.querySelector('.marquee__part');
+                    if (!marqueeContent) return;
+                    const contentWidth = marqueeContent.offsetWidth;
+                    const viewportWidth = 200;
+                    const needed = Math.ceil(viewportWidth / contentWidth) + 2;
+                    setRepetitions(Math.max(4, needed));
+                };
+
+                calculateRepetitions();
+            }, [text]);
+
+            useEffect(() => {
+                const setupMarquee = () => {
+                    if (!marqueeInnerRef.current) return;
+                    const marqueeContent = marqueeInnerRef.current.querySelector('.marquee__part');
+                    if (!marqueeContent) return;
+                    const contentWidth = marqueeContent.offsetWidth;
+                    if (contentWidth === 0) return;
+
+                    if (animationRef.current) {
+                        animationRef.current.kill();
+                    }
+
+                    animationRef.current = gsap.to(marqueeInnerRef.current, {
+                        x: -contentWidth,
+                        duration: speed,
+                        ease: 'none',
+                        repeat: -1
+                    });
+                };
+
+                const timer = setTimeout(setupMarquee, 50);
+
+                return () => {
+                    clearTimeout(timer);
+                    if (animationRef.current) {
+                        animationRef.current.kill();
+                    }
+                };
+            }, [text, repetitions, speed]);
+
+            const handleMouseEnter = ev => {
+                if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+                const rect = itemRef.current.getBoundingClientRect();
+                const x = ev.clientX - rect.left;
+                const y = ev.clientY - rect.top;
+                const edge = findClosestEdge(x, y, rect.width, rect.height);
+
+                gsap
+                    .timeline({ defaults: animationDefaults })
+                    .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
+                    .set(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0)
+                    .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' }, 0);
+            };
+
+            const handleMouseLeave = ev => {
+                if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+                const rect = itemRef.current.getBoundingClientRect();
+                const x = ev.clientX - rect.left;
+                const y = ev.clientY - rect.top;
+                const edge = findClosestEdge(x, y, rect.width, rect.height);
+
+                gsap
+                    .timeline({ defaults: animationDefaults })
+                    .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
+                    .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
+            };
+
+            return (
+                <div className="menu__item" ref={itemRef} style={{ borderColor }}>
+                    <a
+                        className="menu__item-link"
+                        href={link}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                        style={{ color: textColor }}
+                    >
+                        {text}
+                    </a>
+                    <div className="marquee" ref={marqueeRef} style={{ backgroundColor: marqueeBgColor }}>
+                        <div className="marquee__inner-wrap">
+                            <div className="marquee__inner" ref={marqueeInnerRef} aria-hidden="true">
+                                {[...Array(repetitions)].map((_, idx) => (
+                                    <div className="marquee__part" key={idx} style={{ color: marqueeTextColor }}>
+                                        <span>{text}</span>
+                                        <div className="marquee__img" style={{ backgroundImage: `url(${image})` }} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function FlowingMenu({ items = [], speed = 15 }) {
+            return (
+                <div className="menu-wrap">
+                    <nav className="menu">
+                        {items.map((item, idx) => (
+                            <MenuItem
+                                key={idx}
+                                {...item}
+                                speed={speed}
+                                textColor="#000"
+                                marqueeBgColor="#000"
+                                marqueeTextColor="#fff"
+                                borderColor="#000"
+                            />
+                        ))}
+                    </nav>
+                </div>
+            );
+        }
+
+        function CountUpNumber({ end, duration = 2000, suffix = "" }) {
+            const [count, setCount] = useState(0);
+            const countRef = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        if (entries[0].isIntersecting) {
+                            let startTime = null;
+                            const animate = (currentTime) => {
+                                if (!startTime) startTime = currentTime;
+                                const progress = Math.min((currentTime - startTime) / duration, 1);
+                                setCount(Math.floor(progress * end));
+                                if (progress < 1) {
+                                    requestAnimationFrame(animate);
+                                }
+                            };
+                            requestAnimationFrame(animate);
+                        }
+                    },
+                    { threshold: 0.5 }
+                );
+
+                if (countRef.current) {
+                    observer.observe(countRef.current);
+                }
+
+                return () => observer.disconnect();
+            }, [end, duration]);
+
+            return <span ref={countRef}>{count}{suffix}</span>;
+        }
+
+        function Card({ id, title, image, tags }) {
+            const cardRef = useRef(null);
+
+            useEffect(() => {
+                const card = cardRef.current;
+                if (!card) return;
+
+                const handleMouseMove = (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 30;
+                    const rotateY = (centerX - x) / 30;
+
+                    gsap.to(card, {
+                        duration: 0.3,
+                        rotateX: rotateX,
+                        rotateY: rotateY,
+                        ease: 'power2.out'
+                    });
+                };
+
+                const handleMouseLeave = () => {
+                    gsap.to(card, {
+                        duration: 0.5,
+                        rotateX: 0,
+                        rotateY: 0,
+                        ease: 'power2.out'
+                    });
+                };
+
+                card.addEventListener('mousemove', handleMouseMove);
+                card.addEventListener('mouseleave', handleMouseLeave);
+
+                return () => {
+                    card.removeEventListener('mousemove', handleMouseMove);
+                    card.removeEventListener('mouseleave', handleMouseLeave);
+                };
+            }, []);
+
+            return (
+                <div className="card" ref={cardRef} id={id}>
+                    <div className="card-image-container">
+                        <img src={image} alt={title} className="card-image" />
+                    </div>
+                    <div className="card-content">
+                        <div className="card-tags">
+                            {tags.map((tag, idx) => (
+                                <span key={idx} className="card-tag">{tag}</span>
+                            ))}
+                        </div>
+                        <button className="card-button">{title}</button>
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            const menuItems = [
+                { link: '#design', text: 'Design', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400' },
+                { link: '#develop', text: 'Develop', image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400' },
+                { link: '#brand', text: 'Brand', image: 'https://images.unsplash.com/photo-1634942537034-2531766767d1?w=400' },
+                { link: '#photo', text: 'Photo', image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=400' }
+            ];
+
+            const cards = [
+                {
+                    id: 'design',
+                    title: 'Creative Design',
+                    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600',
+                    tags: ['UI/UX', 'Graphics']
+                },
+                {
+                    id: 'development',
+                    title: 'Web Development',
+                    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600',
+                    tags: ['React', 'Frontend']
+                },
+                {
+                    id: 'branding',
+                    title: 'Brand Identity',
+                    image: 'https://images.unsplash.com/photo-1634942537034-2531766767d1?w=600',
+                    tags: ['Logo', 'Strategy']
+                },
+                {
+                    id: 'photography',
+                    title: 'Photography',
+                    image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600',
+                    tags: ['Commercial', 'Portrait']
+                },
+                {
+                    id: 'motion',
+                    title: 'Motion Graphics',
+                    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600',
+                    tags: ['Animation', '3D']
+                },
+                {
+                    id: 'consulting',
+                    title: 'Consulting',
+                    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600',
+                    tags: ['Strategy', 'Growth']
+                }
+            ];
+
+            return (
+                <div className="container">
+                    <aside className="sidebar">
+                        <div className="logo">ARRONSTONE</div>
+                        <FlowingMenu items={menuItems} speed={12} />
+                    </aside>
+                    <main className="main-content">
+                        <section className="stats-section">
+                            <div className="stat-item">
+                                <div className="stat-number"><CountUpNumber end={50} suffix="+" /></div>
+                                <div className="stat-label">Projects</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-number"><CountUpNumber end={5} suffix="+" /></div>
+                                <div className="stat-label">Years Experience</div>
+                            </div>
+                        </section>
+                        <div className="cards-container">
+                            <div className="cards-grid">
+                                {cards.map((card) => (
+                                    <Card key={card.id} {...card} />
+                                ))}
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
